@@ -1,0 +1,695 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<title>DESSA and Student Demographics</title> 
+	<style type="text/css" title="currentStyle">
+		@import "/admin/sqlReports/DataTables/media/css/sqlReports.dataTables.css";
+		@import "/admin/sqlReports/DataTables/extensions/Buttons/css/buttons.dataTables.css";
+		@import "/admin/sqlReports/DataTables/extensions/FixedHeader/css/fixedHeader.dataTables.min.css";
+		@import "/admin/sqlReports/DataTables/extensions/ColumnFiltering/css/ColumnFilterWidgets.css";
+	</style>
+
+
+	<script type="text/javascript" language="javascript" src="/admin/sqlReports/DataTables/media/js/jquery.js"></script>
+	<script type="text/javascript" language="javascript" src="/admin/sqlReports/DataTables/media/js/jquery.dataTables10.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/admin/sqlReports/DataTables/extensions/Select/js/dataTables.select.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/admin/sqlReports/DataTables/extensions/Buttons/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/admin/sqlReports/DataTables/extensions/pdfmake/vfs_fonts.js"></script>
+    <script type="text/javascript" language="javascript" src="/admin/sqlReports/DataTables/extensions/Buttons/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/admin/sqlReports/DataTables/extensions/Buttons/js/buttons.colVis.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/admin/sqlReports/DataTables/extensions/FixedHeader/js/dataTables.fixedHeader.min.js"></script>
+    <script type="text/javascript" language="javascript" src="/admin/sqlReports/DataTables/extensions/ColReorder/js/dataTables.colReorder.min.js"></script>
+    <script type="text/javascript" src="/admin/sqlReports/DataTables/extensions/ColumnFiltering/js/ColumnFilterWidgets.js"></script>
+    <script lang="javascript" src="xlsx.js"></script>
+	
+	<script type="text/javascript" charset="utf-8">
+var $m = jQuery.noConflict();
+$m(document).ready(function() {
+
+if($m('table#dataresults tr th[class="DCID"]').index()>=0) {dcidcolvalue=$m('table#dataresults tr th[class="DCID"]').index()} else {dcidcolvalue=false};
+
+if($m('table#dataresults tr th[class="DCID DISPLAY"]').index()>=0) {dciddisplaycolvalue=$m('table#dataresults tr th[class="DCID DISPLAY"]').index() + 1} else {dciddisplaycolvalue=1};
+
+if($m('table#dataresults tr th[class="HIDE"]').index()>=0) {hidecolvalue=$j('table#dataresults tr th[class="HIDE"]').map(function() {return $m(this).index()}).get().join(',')} else {hidecolvalue='-1,'};
+
+numofhides = $m('[class="HIDE"]').length;
+
+if($m('table#dataresults tr th[class~="NOCF"]').index()>=0) {nocfcolvalue=$j('table#dataresults tr th[class~="NOCF"]').map(function() {return $m(this).index()}).get().join(',')} else {nocfcolvalue='-1'};
+
+hideandnocf = hidecolvalue.concat(',',nocfcolvalue);
+
+nofilter = hideandnocf.split(',');
+
+nofilter.push(0,dcidcolvalue);
+
+  var oTable  = $m('#dataresults').dataTable( {
+
+<!-- Remove the W after the B to remove column filtering  --> 
+    dom: 'BWlfrtip',
+
+    select: {
+            style: 'multi+shift'
+        },
+
+    "order": [],
+
+        buttons: [
+
+<!-- Begin Other Buttons  --> 
+// 	{extend: 'csv', text: 'CSV', exportOptions: { columns: ':visible', modifier: { search: 'applied' }, format: {footer: function() {return ''}}}, header: true, footer: true},
+
+<!-- End Other Buttons  --> 
+
+        ],
+
+
+        
+<!-- Do not change the aoColumnDefs values  --> 
+    "aoColumnDefs": [
+            { "bSortable": false, "aTargets": [ 0 ] }
+        ],	
+
+    "aoColumnDefs": [
+            { "bVisible": false, "aTargets": [ dcidcolvalue, "HIDE"  ] },
+            { "bSearchable": false, "aTargets": [ dcidcolvalue, "HIDE"  ] }
+        ],
+
+    "paging":   false,
+	"lengthChange": false,
+	"ordering": true,
+	"autoWidth": false,
+    "searching": true,
+    "info": true,
+    fixedHeader: true,
+	"oColumnFilterWidgets": {"aiExclude": nofilter},
+    } );
+} );
+
+</script>
+
+
+<!-- Required style sheets: screen.css, and print.css --> 
+	<link href="/images/css/screen.css" rel="stylesheet" media="screen"> 
+	<link href="/images/css/print.css" rel="stylesheet" media="print"> 
+	
+<!-- Commonscripts wildcard needs to load last --> 
+	~[wc:commonscripts] 
+</head>
+
+<body>
+
+
+
+~[wc:admin_header_css]<!-- breadcrumb start --><a href="/admin/home.html" target="_top">~[text:psx.html.admin_district.home.start_page]</a> &gt; DESSA and Student Demographics<!-- breadcrumb end -->~[wc:admin_navigation_css]
+
+<div class="box-round"> 
+
+<h1>DESSA and Student Demographics</h1>
+
+<button id="xlsx" onclick="exportXLSX()">Excel</button>
+
+<!-- Do not change the table id or class  -->
+<table id="dataresults" class="display grid">
+ 	 
+<thead>
+<tr bgcolor="#f6f6f6">
+    <th class="NOCF" align="left">Student #</th>
+    <th class="NOCF">Last Name</th>
+	<th class="NOCF" align="left">First Name</th>
+	<th align="center">Gender</th>
+	<th align="left">Grade Level</th>
+	<th align="left">Home Room</th>
+	<th class="team" align="left">Team</th>
+	<th class="adv" align="CENTER">Adv ELA</th>
+	<th class="adv" align="CENTER">Adv Math</th>
+	<th class="li" align="CENTER">Low Income?</th>
+	<th class="fof" align="CENTER">Has 504?</th>
+	<th class="iep" align="CENTER">Has IEP?</th>
+	<th class="lep" align="CENTER">Is LEP?</th>
+	<th class="eth" align="CENTER">Enthnicity</th>
+	<th class='NOCF cur spring' align="CENTER"> Spring</th>
+	<th class='NOCF cur winter' align="CENTER"> Winter</th>
+	<th class='NOCF cur' align="CENTER"> Fall</th>
+	<th class='NOCF prev' align="CENTER"> Spring</th>
+	<th class='NOCF prev' align="CENTER"> Winter</th>
+	<th class='NOCF prev' align="CENTER"> Fall</th>
+	<th class='NOCF prev2' align="CENTER"> Spring</th>
+	<th class='NOCF prev2' align="CENTER"> Winter</th>
+	<th class='NOCF prev2' align="CENTER"> Fall</th>
+	
+</tr>
+</thead>
+<tbody>
+
+~[tlist_sql;
+WITH TESTSCORES AS (
+	SELECT
+		students.id,
+		studenttestscore.percentscore,
+		studenttestscore.alphascore,
+		studenttestscore.numscore,
+		studenttest.test_date,
+		test.name || ' ' || testscore.name concat,
+		test.name,
+		testscore.name testscorename
+	FROM
+		students
+		INNER JOIN studenttest ON studenttest.studentid = students.ID
+		INNER JOIN test ON test.ID = studenttest.testid
+		INNER JOIN studenttestscore ON studenttestscore.studenttestid = studenttest.id
+		INNER JOIN testscore ON testscore.id = studenttestscore.testscoreid
+	WHERE
+		students.enroll_status = 0
+		-- AND studenttestscore.numscore <> 0
+		-- This part weeds out the full test that have something in the alphascore field (like Spanish tests).
+		-- It eliminates multiple rows for kids that have two testing results for the same period of time.
+		AND NOT EXISTS (
+			SELECT 
+				1
+			FROM 
+				studenttestscore
+			WHERE 
+				studenttest.id = studenttestscore.studenttestid 
+				AND studenttestscore.alphascore IS NULL
+		)
+)
+
+SELECT
+	students.student_number,
+	students.last_name,
+	students.first_name,
+	students.gender,
+	students.grade_level,
+	students.home_room,
+	students.team,
+	
+	CASE WHEN u_custom_demographic.adv_ela = 'N' THEN 'No'
+	WHEN u_custom_demographic.adv_ela = 'Y' THEN 'Yes'
+	ELSE u_custom_demographic.adv_ela END as advELA,
+	
+	CASE WHEN u_custom_demographic.adv_ma = 'N' THEN 'No'
+	WHEN u_custom_demographic.adv_ma = 'Y' THEN 'Yes'
+	ELSE u_custom_demographic.adv_ma END advMA,
+	
+	CASE WHEN to_char(s_il_stu_x.lii) = '0' THEN 'No'
+	WHEN to_char(s_il_stu_x.lii) = '1' THEN 'Yes'
+	WHEN to_char(s_il_stu_x.lii) IS NULL THEN 'No'
+	ELSE to_char(s_il_stu_x.lii) END lowIncome,
+	
+	CASE WHEN to_char(s_il_stu_plan504_x.participant) = '0' THEN 'No'
+	WHEN to_char(s_il_stu_plan504_x.participant) = '1' THEN 'Yes'
+	WHEN to_char(s_il_stu_plan504_x.participant) IS NULL THEN 'No'
+	ELSE to_char(s_il_stu_plan504_x.participant) END has504,
+	
+	CASE WHEN to_char(u_custom_demographic.has_iep) = 'N' THEN 'No'
+	WHEN to_char(u_custom_demographic.has_iep) = 'Y' THEN 'Yes'
+	WHEN to_char(u_custom_demographic.has_iep) IS NULL THEN 'No'
+	ELSE to_char(u_custom_demographic.has_iep) END hasIEP,
+	
+	CASE WHEN to_char(S_IL_STU_X.LEP) = '0' THEN 'No'
+	WHEN to_char(S_IL_STU_X.LEP) = '1' THEN 'Yes'
+	WHEN to_char(S_IL_STU_X.LEP) IS NULL THEN 'No'
+	ELSE to_char(S_IL_STU_X.LEP) END isLEP,
+	
+	(
+		SELECT
+			gen.name
+		FROM
+			gen
+		WHERE
+			gen.cat = 'ethnicity'
+			AND gen.value = students.ethnicity
+	) ethnicity,
+	
+	curdessaspring.alphascore "curdessaspring",
+	curdessawinter.alphascore "curdessawinter",
+	curdessafall.alphascore "curdessafall",
+	
+	prevdessaspring.alphascore "prevdessaspring",
+	prevdessawinter.alphascore "prevdessawinter",
+	prevdessafall.alphascore "prevdessafall",
+	
+	prev2dessaspring.alphascore "prev2dessaspring",
+	prev2dessawinter.alphascore "prev2dessawinter",
+	prev2dessafall.alphascore "prev2dessafall"
+
+FROM
+	Students
+	JOIN u_custom_demographic ON u_custom_demographic.studentsdcid = students.dcid
+	JOIN s_il_stu_x ON s_il_stu_x.studentsdcid = students.dcid
+	LEFT JOIN s_il_stu_plan504_x ON s_il_stu_plan504_x.studentsdcid = students.dcid
+	LEFT JOIN TESTSCORES curdessaspring ON 
+		students.id = curdessaspring.id 
+		AND curdessaspring.name LIKE '%DESSA'
+		AND curdessaspring.testscorename = 'Ratings'
+		AND curdessaspring.test_date BETWEEN TO_DATE(CONCAT('04/01/', to_char(~(curyearid) + 1991)), 'MM/DD/YYYY') AND TO_DATE(CONCAT('05/31/', to_char(~(curyearid) + 1991)), 'MM/DD/YYYY')
+		AND curdessaspring.alphascore IS NOT NULL
+	LEFT JOIN TESTSCORES curdessawinter ON 
+		students.id = curdessawinter.id 
+		AND curdessawinter.name LIKE '%DESSA'
+		AND curdessawinter.testscorename = 'Ratings'
+		AND curdessawinter.test_date BETWEEN TO_DATE(CONCAT('12/01/', to_char(~(curyearid) + 1990)), 'MM/DD/YYYY') AND TO_DATE(CONCAT('03/31/', to_char(~(curyearid) + 1991)), 'MM/DD/YYYY')
+		AND curdessawinter.alphascore IS NOT NULL
+	LEFT JOIN TESTSCORES curdessafall ON 
+		students.id = curdessafall.id 
+		AND curdessafall.name LIKE '%DESSA'
+		AND curdessafall.testscorename = 'Ratings'
+		AND curdessafall.test_date BETWEEN TO_DATE(CONCAT('08/01/', to_char(~(curyearid) + 1990)), 'MM/DD/YYYY') AND TO_DATE(CONCAT('11/30/', to_char(~(curyearid) + 1990)), 'MM/DD/YYYY')
+		AND curdessafall.alphascore IS NOT NULL
+		
+	LEFT JOIN TESTSCORES prevdessaspring ON 
+		students.id = prevdessaspring.id 
+		AND prevdessaspring.name LIKE '%DESSA'
+		AND prevdessaspring.testscorename = 'Ratings'
+		AND prevdessaspring.test_date BETWEEN TO_DATE(CONCAT('04/01/', to_char(~(curyearid) + 1990)), 'MM/DD/YYYY') AND TO_DATE(CONCAT('05/31/', to_char(~(curyearid) + 1990)), 'MM/DD/YYYY')
+		AND prevdessaspring.alphascore IS NOT NULL
+	LEFT JOIN TESTSCORES prevdessawinter ON 
+		students.id = prevdessawinter.id 
+		AND prevdessawinter.name LIKE '%DESSA'
+		AND prevdessawinter.testscorename = 'Ratings'
+		AND prevdessawinter.test_date BETWEEN TO_DATE(CONCAT('12/01/', to_char(~(curyearid) + 1989)), 'MM/DD/YYYY') AND TO_DATE(CONCAT('03/31/', to_char(~(curyearid) + 1990)), 'MM/DD/YYYY')
+		AND prevdessawinter.alphascore IS NOT NULL
+	LEFT JOIN TESTSCORES prevdessafall ON 
+		students.id = prevdessafall.id 
+		AND prevdessafall.name LIKE '%DESSA'
+		AND prevdessafall.testscorename = 'Ratings'
+		AND prevdessafall.test_date BETWEEN TO_DATE(CONCAT('08/01/', to_char(~(curyearid) + 1989)), 'MM/DD/YYYY') AND TO_DATE(CONCAT('11/30/', to_char(~(curyearid) + 1989)), 'MM/DD/YYYY')
+		AND prevdessafall.alphascore IS NOT NULL
+		
+	LEFT JOIN TESTSCORES prev2dessaspring ON 
+		students.id = prev2dessaspring.id 
+		AND prev2dessaspring.name LIKE '%DESSA'
+		AND prev2dessaspring.testscorename = 'Ratings'
+		AND prev2dessaspring.test_date BETWEEN TO_DATE(CONCAT('04/01/', to_char(~(curyearid) + 1989)), 'MM/DD/YYYY') AND TO_DATE(CONCAT('05/31/', to_char(~(curyearid) + 1989)), 'MM/DD/YYYY')
+		AND prev2dessaspring.alphascore IS NOT NULL
+	LEFT JOIN TESTSCORES prev2dessawinter ON 
+		students.id = prev2dessawinter.id 
+		AND prev2dessawinter.name LIKE '%DESSA'
+		AND prev2dessawinter.testscorename = 'Ratings'
+		AND prev2dessawinter.test_date BETWEEN TO_DATE(CONCAT('12/01/', to_char(~(curyearid) + 1988)), 'MM/DD/YYYY') AND TO_DATE(CONCAT('03/31/', to_char(~(curyearid) + 1989)), 'MM/DD/YYYY')
+		AND prev2dessawinter.alphascore IS NOT NULL
+	LEFT JOIN TESTSCORES prev2dessafall ON 
+		students.id = prev2dessafall.id 
+		AND prev2dessafall.name LIKE '%DESSA'
+		AND prev2dessafall.testscorename = 'Ratings'
+		AND prev2dessafall.test_date BETWEEN TO_DATE(CONCAT('08/01/', to_char(~(curyearid) + 1988)), 'MM/DD/YYYY') AND TO_DATE(CONCAT('11/30/', to_char(~(curyearid) + 1988)), 'MM/DD/YYYY')
+		AND prev2dessafall.alphascore IS NOT NULL
+	
+WHERE
+	~(curschoolid) in (0, students.schoolid)
+    AND students.schoolid <> 31948
+	AND students.enroll_status = 0
+	AND S_IL_STU_X.RCDTS_SERVING_SCHOOL IS NULL
+
+ORDER BY
+	students.last_name
+]
+<tr>
+    <td align="left">~(students.student_number)</td>
+    <td align="left">~(students.last_name)</td>
+	<td align="left">~(students.first_name)</td>
+	<td align="center">~(students.gender)</td>
+	<td align="center">~(students.grade_level)</td>
+	<td align="center">~(students.home_room)</td>
+	<td class="team" align="LEFT">~(students.team)</td>
+	<td class="adv" align="CENTER">~(advELA;f)</td>
+	<td class="adv" align="CENTER">~(advMA;f)</td>
+	<td class="li" align="CENTER">~(lowIncome;f)</td>
+	<td class="fof" align="CENTER">~(has504;f)</td>
+	<td class="iep" align="CENTER">~(hasIEP;f)</td>
+	<td class="lep" align="CENTER">~(isLEP;f)</td>
+	<td class="eth" align="LEFT">~(ethnicity;f)</td>
+	<td class="score spring" align="CENTER">~(curdessaspring;f)</td>
+	<td class="score winter" align="CENTER">~(curdessawinter;f)</td>
+	<td class="score" align="CENTER">~(curdessafall;f)</td>
+	<td class="score" align="CENTER">~(prevdessaspring;f)</td>
+	<td class="score" align="CENTER">~(prevdessawinter;f)</td>
+	<td class="score" align="CENTER">~(prevdessafall;f)</td>
+	<td class="score" align="CENTER">~(prev2dessaspring;f)</td>
+	<td class="score" align="CENTER">~(prev2dessawinter;f)</td>
+	<td class="score" align="CENTER">~(prev2dessafall;f)</td>
+
+</tr>
+[/tlist_sql]
+</tbody>
+
+</table>
+
+<!-- End of content table -->
+
+</div> 
+
+~[wc:admin_footer_css] 
+
+<script>
+
+    var currentYear = ~(curyearid) + 1990;
+    var currentSchYear = String(currentYear).slice(-2) + '/' + String(currentYear + 1).slice(-2)
+    var prevSchYear = String(currentYear - 1).slice(-2) + '/' + String(currentYear).slice(-2)
+    var prev2SchYear = String(currentYear - 2).slice(-2) + '/' + String(currentYear - 1).slice(-2)
+    
+    var current = document.getElementsByClassName('cur')
+    for (var i = 0; i < current.length; i++) {
+        text = current[i].innerHTML
+        current[i].innerHTML = currentSchYear + text
+    }
+    
+    var previous = document.getElementsByClassName('prev')
+    for (var i = 0; i < previous.length; i++) {
+        text = previous[i].innerHTML
+        previous[i].innerHTML = prevSchYear + text
+    }
+    
+    var previous2 = document.getElementsByClassName('prev2')
+    for (var i = 0; i < previous2.length; i++) {
+        text = previous2[i].innerHTML
+        previous2[i].innerHTML = prev2SchYear + text
+    }
+    
+    const s = ~(curschoolid)
+    
+    var adv = document.getElementsByClassName('adv')
+    var team = document.getElementsByClassName('team')
+    
+    if ((s != '5177') && (s != '0')) {
+        for (var i = 0; i < team.length; i++) {
+            team[i].style.display = 'none';
+        }
+        
+        if ((s != '5197')) {
+            for (var i = 0; i < adv.length; i++) {
+                adv[i].style.display = 'none';
+            }
+        } 
+    } 
+    
+    for (var i = 0; i < team.length; i++) {
+        if (team[i].innerHTML.endsWith("Blue")) {
+            team[i].style.backgroundColor = '#86e1e0';
+        } else if (team[i].innerHTML.endsWith("Green")) {
+            team[i].style.backgroundColor = '#a4fbaa';
+        } else if (team[i].innerHTML.endsWith("Orange")) {
+            team[i].style.backgroundColor = '#fbd3b2';
+        } else if (team[i].innerHTML.endsWith("Purple")) {
+            team[i].style.backgroundColor = '#b494c5';
+        } else if (team[i].innerHTML.endsWith("Red")) {
+            team[i].style.backgroundColor = '#FF8080';
+        }
+    }
+    
+    for (var i = 0; i < adv.length; i++) {
+        if (adv[i].innerHTML == "Yes") {
+            adv[i].style.backgroundColor = '#CDFAD5';
+        } else if (adv[i].innerHTML == "No") {
+            adv[i].style.backgroundColor = '#f9b9b9';
+        }
+    }
+    
+    
+    var li = document.getElementsByClassName('li')
+    var fof = document.getElementsByClassName('fof')
+    var iep = document.getElementsByClassName('iep')
+    var lep = document.getElementsByClassName('lep')
+    
+    for (var i = 0; i < li.length; i++) {
+        if (li[i].innerHTML == "Yes") {
+            li[i].style.backgroundColor = '#CDFAD5';
+        } else if (li[i].innerHTML == "No") {
+            li[i].style.backgroundColor = '#f9b9b9';
+        }
+    }
+    
+    for (var i = 0; i < fof.length; i++) {
+        if (fof[i].innerHTML == "Yes") {
+            fof[i].style.backgroundColor = '#CDFAD5';
+        } else if (fof[i].innerHTML == "No") {
+            fof[i].style.backgroundColor = '#f9b9b9';
+        }
+    }
+    
+    for (var i = 0; i < iep.length; i++) {
+        if (iep[i].innerHTML == "Yes") {
+            iep[i].style.backgroundColor = '#CDFAD5';
+        } else if (iep[i].innerHTML == "No") {
+            iep[i].style.backgroundColor = '#f9b9b9';
+        }
+    }
+    
+    for (var i = 0; i < lep.length; i++) {
+        if (lep[i].innerHTML == "Yes") {
+            lep[i].style.backgroundColor = '#CDFAD5';
+        } else if (lep[i].innerHTML == "No") {
+            lep[i].style.backgroundColor = '#f9b9b9';
+        }
+    }
+    
+    var eth = document.getElementsByClassName('eth')
+    
+    for (var i = 0; i < eth.length; i++) {
+        if (eth[i].innerHTML == "Asian") {
+            eth[i].style.backgroundColor = '#FF8080';
+        } else if (eth[i].innerHTML == "Caucasian") {
+            eth[i].style.backgroundColor = '#fbd3b2';
+        } else if (eth[i].innerHTML == "Hispanic") {
+            eth[i].style.backgroundColor = '#f7fbb4';
+        } else if (eth[i].innerHTML == "African-American ") {
+            eth[i].style.backgroundColor = '#a4fbaa';
+        } else if (eth[i].innerHTML == "Two or more races") {
+            eth[i].style.backgroundColor = '#b4fdde';
+        } else if (eth[i].innerHTML == "American Indian") {
+            eth[i].style.backgroundColor = '#f7abc7';
+        } else if (eth[i].innerHTML == "Pacific Islander") {
+            eth[i].style.backgroundColor = '#b494c5';
+        } else if (eth[i].innerHTML == "Middle Eastern or North African") {
+            eth[i].style.backgroundColor = '#bae1ff';
+        }
+    }
+    
+    const d = new Date();
+    const month = d.getMonth();
+    const year = d.getFullYear();
+    
+    var spring = document.getElementsByClassName('spring')
+    var winter = document.getElementsByClassName('winter')
+    
+    if (((month == 11) && (year == currentYear)) || (((month >= 0) && (month < 3) && (year == (currentYear + 1))))) {
+        for (var i = 0; i < spring.length; i++) {
+            spring[i].style.display = 'none';
+        }
+    } else if (((month >= 9) && (month < 11)) && (year == currentYear)) {
+        for (var i = 0; i < spring.length; i++) {
+            spring[i].style.display = 'none';
+        }
+        for (var i = 0; i < winter.length; i++) {
+            winter[i].style.display = 'none';
+        }
+    }
+    
+    var score = document.getElementsByClassName('score')
+    for (var i = 0; i < score.length; i++) {
+        if (score[i].innerHTML.startsWith('Need')) {
+            score[i].style.backgroundColor = '#ffb3ba';
+        } else if (score[i].innerHTML.startsWith('Typi')) {
+            score[i].style.backgroundColor = '#baffc9';
+        } else if (score[i].innerHTML.startsWith('Stre')) {
+            score[i].style.backgroundColor = '#bae1ff';
+        }
+    }
+    
+    function exportXLSX() {
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.table_to_sheet(document.getElementById('dataresults'))
+        
+        for (const [key, value] of Object.entries(worksheet)) {
+            
+            if (key.includes('G')) {
+                if (value.v == '5Blue' || value.v == '6Blue') {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: '86e1e0'}
+                        }
+                    }
+                } else if (value.v == '5Green' || value.v == '6Green') {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'a4fbaa'}
+                        }
+                    }
+                } else if (value.v == '5Orange' || value.v == '6Orange') {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'fbd3b2'}
+                        }
+                    }
+                } else if (value.v == '5Purple' || value.v == '6Purple') {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'b494c5'}
+                        }
+                    }
+                } else if (value.v == '5Red' || value.v == '6Red') {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'FF8080'}
+                        }
+                    }
+                }
+                
+            }
+            
+            
+            if (key.includes('H') || key.includes('I') || key.includes('J') || key.includes('K') || key.includes('L') || key.includes('M')){
+                if (value.v == "Yes"){
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'CDFAD5'}
+                        }
+                    }
+                } else if (value.v == "No") {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'F9B9B9'}
+                        }
+                    }
+                }
+                
+            }
+            
+
+            if (key.includes('O') || key.includes('P') || key.includes('Q') || key.includes('R') || key.includes('S') || key.includes('T') || key.includes('U') || key.includes('V') || key.includes('W')) {
+                if (value.v == 'Need') {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'ffb3ba'}
+                        }
+                    }
+                } else if (value.v == 'Typical') {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'baffc9'}
+                        }
+                    }
+                } else if (value.v == 'Strength') {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'bae1ff'}
+                        }
+                    }
+                } 
+            }
+            
+            if (key.includes('N')) {
+                if (value.v == 'Asian') {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'FF8080'}
+                        }
+                    }
+                } else if (value.v == 'Caucasian') {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'fbd3b2'}
+                        }
+                    }
+                } else if (value.v == 'Hispanic') {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'f7fbb4'}
+                        }
+                    }
+                } else if (value.v == 'African-American ') {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'a4fbaa'}
+                        }
+                    }
+                } else if (value.v == 'Two or more races') {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'b4fdde'}
+                        }
+                    }
+                } else if (value.v == 'American Indian') {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'f7abc7'}
+                        }
+                    }
+                } else if (value.v == 'Pacific Islander') {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'b494c5'}
+                        }
+                    }
+                } else if (value.v == 'Middle Eastern or North African') {
+                    worksheet[key].s = {
+                        fill: {
+                            fgColor: {rgb: 'bae1ff'}
+                        }
+                    }
+                } 
+            }
+        }
+        
+        
+        // used for hiding certain columns in the sheet based on season
+        if (((month == 11) && (year == currentYear)) || (((month >= 0) && (month < 3) && (year == (currentYear + 1))))) {
+            // Just hides spring O-R
+            
+            for (var i = 14; i < 15; i++) {
+                if(!worksheet["!cols"]) worksheet["!cols"] = [];
+                if(!worksheet["!cols"][i]) worksheet["!cols"][i] = {wch: 8};
+                worksheet["!cols"][i].hidden = true;
+            }
+        } else if (((month >= 9) && (month < 11)) && (year == currentYear)) {
+            // Hides winter and spring O-V
+            for (var i = 14; i < 16; i++) {
+                if(!worksheet["!cols"]) worksheet["!cols"] = [];
+                if(!worksheet["!cols"][i]) worksheet["!cols"][i] = {wch: 8};
+                worksheet["!cols"][i].hidden = true;
+            }
+        }
+        
+        // use to hide certain columns based on school
+        if ((s != '5177') && (s != '0')) {
+            if(!worksheet["!cols"]) worksheet["!cols"] = [];
+            if(!worksheet["!cols"][6]) worksheet["!cols"][6] = {wch: 8};
+            worksheet["!cols"][6].hidden = true;
+            
+            if ((s != '5197')) {
+                if(!worksheet["!cols"]) worksheet["!cols"] = [];
+                if(!worksheet["!cols"][7]) worksheet["!cols"][7] = {wch: 8};
+                worksheet["!cols"][7].hidden = true;
+                if(!worksheet["!cols"]) worksheet["!cols"] = [];
+                if(!worksheet["!cols"][8]) worksheet["!cols"][8] = {wch: 8};
+                worksheet["!cols"][8].hidden = true;
+            
+            } 
+        } 
+        
+        // const variable = 1
+
+        // if (variable == 1) {
+
+        //     /* Excel column "D" -> SheetJS column index 3 == XLSX.utils.decode_col("D") */
+        //     var COL_INDEX = 4;
+
+        //     /* create !cols array if it does not exist */
+        //     if(!worksheet["!cols"]) worksheet["!cols"] = [];
+
+        //     /* create column metadata object if it does not exist */
+        //     if(!worksheet["!cols"][COL_INDEX]) worksheet["!cols"][COL_INDEX] = {wch: 8};
+
+        //     /* set column to hidden */
+        //     worksheet["!cols"][COL_INDEX].hidden = true;
+        // }
+
+        // console.log(worksheet)
+
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Dessa");
+        XLSX.writeFile(workbook, "Dessa.xlsx");
+
+    }
+</script>
+</body> 
+</html>
